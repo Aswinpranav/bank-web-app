@@ -1,0 +1,706 @@
+/* ==============================
+   GLOBAL & RESET
+================================ */
+:root {
+  --primary: #00ff99;
+  --secondary: #00f2ff;
+  --bg-dark: #050505;
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --sidebar-width: 260px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  color: #fff;
+  overflow-x: hidden;
+}
+
+.dashboard-container {
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+/* Base radial gradient fading seamlessly down */
+.dashboard-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 50% 0%, #0d2116 0%, #050505 60%);
+  -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ==============================
+   NAVBAR & GLASS HEADER
+================================ */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 15px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 100;
+
+  /* Glassmorphism */
+  background: rgba(10, 10, 10, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.left-section {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.hamburger {
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--primary);
+  transition: transform 0.2s;
+}
+
+.hamburger:hover {
+  transform: scale(1.1);
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-btn {
+  background: transparent;
+  border: none;
+  color: #ccc;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: 0.3s;
+  font-size: 15px;
+}
+
+.nav-btn:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 10px rgba(0, 255, 153, 0.1);
+}
+
+/* Language Selector */
+.language-wrapper {
+  position: relative;
+}
+
+.language-selector select {
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+  cursor: pointer;
+  outline: none;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.language-selector select:hover {
+  border-color: var(--primary);
+}
+
+.language-selector select option {
+  background: #111;
+  color: white;
+}
+
+/* ==============================
+   SIDEBAR (Advanced Glass)
+================================ */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--sidebar-width);
+  height: 100vh;
+  padding: 80px 20px 20px;
+  /* Top padding for navbar space */
+
+  background: rgba(15, 15, 15, 0.85);
+  backdrop-filter: blur(16px);
+  border-right: 1px solid var(--glass-border);
+
+  transform: translateX(-100%);
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  z-index: 99;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.sidebar.open {
+  transform: translateX(0);
+  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+}
+
+.sidebar h3 {
+  margin-bottom: 20px;
+  color: var(--primary);
+  font-size: 18px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--glass-border);
+  padding-bottom: 10px;
+}
+
+.side-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 16px;
+  color: #ccc;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: 500;
+  text-align: left;
+}
+
+.side-btn:hover {
+  background: rgba(0, 255, 153, 0.1);
+  color: var(--primary);
+  border-color: rgba(0, 255, 153, 0.2);
+  transform: translateX(5px);
+}
+
+.side-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ==============================
+   MAIN CONTENT AREA
+================================ */
+.content {
+  padding: 100px 40px 40px;
+  /* Top padding > navbar height */
+  transition: margin-left 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  position: relative;
+  z-index: 10;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.content.shift {
+  margin-left: var(--sidebar-width);
+}
+
+/* ==============================
+   HERO SECTION (3D Typography)
+================================ */
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 20px;
+  margin-bottom: 80px;
+  perspective: 1000px;
+  /* For 3D child transforms */
+}
+
+/* Text Styling */
+.hero-text {
+  flex: 1;
+  z-index: 2;
+  max-width: 800px;
+}
+
+.hero-text h1 {
+  font-size: 3.5rem;
+  line-height: 1.1;
+  font-weight: 800;
+  background: linear-gradient(135deg, #fff 30%, #00ff99 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 20px;
+
+  /* Slight 3D text shadow */
+  text-shadow: 0 10px 30px rgba(0, 255, 153, 0.2);
+}
+
+.hero-text p {
+  font-size: 1.125rem;
+  color: #a0a0a0;
+  line-height: 1.7;
+  max-width: 600px;
+}
+
+/* Hero Image Container */
+.hero-image-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  /* preserve-3d for children */
+  transform-style: preserve-3d;
+}
+
+.hero-image img {
+  max-width: 100%;
+  height: auto;
+  max-height: 500px;
+  border-radius: 20px;
+  /* Advanced shadow/glow */
+  filter: drop-shadow(0 0 40px rgba(0, 255, 153, 0.2));
+  transform: translateZ(20px);
+  /* Pop out slightly */
+}
+
+/* ==============================
+   FLOW SECTION (Cards)
+================================ */
+.flow-section-title {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.flow-section-title h2 {
+  font-size: 2rem;
+  color: white;
+  margin-bottom: 10px;
+}
+
+.flow-section-title p {
+  color: #888;
+}
+
+.flow-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  perspective: 1500px;
+  /* Enable 3D space */
+}
+
+/* 3D Card Base */
+.flow-card-container {
+  /* Used by Framer Motion or basic CSS hover */
+  transform-style: preserve-3d;
+  transition: transform 0.1s;
+  /* Smooth follow if doing manual tilt, otherwise handled by motion */
+  height: 100%;
+}
+
+.flow-card {
+  background: rgba(20, 20, 20, 0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  padding: 30px;
+  border-radius: 20px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  transition: 0.4s ease;
+
+  /* Inner shadow for depth */
+  box-shadow:
+    0 10px 30px -10px rgba(0, 0, 0, 0.5),
+    inset 0 0 20px rgba(255, 255, 255, 0.02);
+}
+
+.flow-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+  transform: translateX(-100%);
+  transition: 0.6s;
+}
+
+.flow-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 0 30px rgba(0, 255, 153, 0.15);
+  transform: translateY(-5px);
+}
+
+.flow-card:hover::before {
+  transform: translateX(100%);
+}
+
+.card-icon {
+  width: 60px;
+  height: 60px;
+  background: rgba(0, 255, 153, 0.1);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  color: var(--primary);
+}
+
+.card-content h3 {
+  font-size: 1.25rem;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.card-content p {
+  color: #aaa;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* ==============================
+   STATS SECTION
+================================ */
+.transparency-stats {
+  margin-top: 100px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.stat-box {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+  border: 1px solid var(--glass-border);
+  padding: 40px 20px;
+  border-radius: 16px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-box h2 {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 10px;
+}
+
+.stat-box p {
+  color: #ccc;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Glow effect behind stats */
+.stat-box::after {
+  content: '';
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background: var(--primary);
+  opacity: 0.15;
+  filter: blur(50px);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+  transition: 0.5s;
+}
+
+.stat-box:hover::after {
+  opacity: 0.3;
+  width: 150px;
+  height: 150px;
+}
+
+/* ==============================
+   PROFILE MODAL (Glassmorphism)
+================================ */
+.profile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.profile-modal {
+  background: rgba(20, 20, 20, 0.9);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 255, 153, 0.1);
+  border-radius: 20px;
+  width: 90%;
+  max-width: 400px;
+  padding: 40px 30px;
+  text-align: center;
+  position: relative;
+  color: white;
+}
+
+.close-modal {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.close-modal:hover {
+  color: #ff5555;
+  transform: rotate(90deg) scale(1.1);
+}
+
+.profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.profile-avatar {
+  background: rgba(0, 255, 153, 0.1);
+  color: var(--primary);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+  box-shadow: 0 0 15px rgba(0, 255, 153, 0.2);
+}
+
+.profile-header h2 {
+  font-size: 1.5rem;
+  margin-bottom: 5px;
+}
+
+.badge {
+  background: rgba(0, 255, 153, 0.2);
+  color: var(--primary);
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.profile-details {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 25px;
+}
+
+.detail-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: #ccc;
+  font-size: 0.95rem;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-row b {
+  color: var(--primary);
+}
+
+.logout-btn-modal {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: rgba(255, 85, 85, 0.1);
+  color: #ff5555;
+  border: 1px solid rgba(255, 85, 85, 0.3);
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: 600;
+}
+
+.logout-btn-modal:hover {
+  background: rgba(255, 85, 85, 0.2);
+  box-shadow: 0 5px 15px rgba(255, 85, 85, 0.2);
+  transform: translateY(-2px);
+}
+
+/* ==============================
+   FARMER MODAL FORMS
+================================ */
+.farmer-modal {
+  max-width: 450px;
+}
+
+.farmer-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.farmer-form input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 12px 15px;
+  color: white;
+  font-size: 0.95rem;
+  outline: none;
+  transition: 0.3s;
+}
+
+.farmer-form input:focus {
+  border-color: var(--primary);
+  background: rgba(0, 255, 153, 0.05);
+  box-shadow: 0 0 10px rgba(0, 255, 153, 0.1);
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(90deg, var(--primary), #00cc88);
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: 0.3s;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 255, 153, 0.3);
+}
+
+/* ==============================
+   ADMIN SPECIFIC BUTTONS 
+================================ */
+.admin-delete-btn {
+  background: rgba(255, 50, 50, 0.05);
+  border: 1px solid rgba(255, 50, 50, 0.2);
+  color: #ff4d4d;
+  padding: 6px 12px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  z-index: 10;
+}
+
+.admin-delete-btn:hover {
+  background: rgba(255, 50, 50, 0.2);
+  border-color: rgba(255, 50, 50, 0.6);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 50, 50, 0.25);
+}
+
+.admin-delete-btn:active {
+  transform: translateY(0);
+}
+
+/* ==============================
+   EXTRA FORM STYLES
+================================ */
+.form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+@media (min-width: 600px) {
+  .farmer-modal {
+    max-width: 600px;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+
+  /* make crop description span two columns if needed */
+  .description-box-wrapper {
+    grid-column: span 2;
+  }
+}
+
+.ai-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(0, 255, 153, 0.8) !important;
+}
+
+.description-box-wrapper textarea:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 10px rgba(0, 255, 153, 0.1);
+  outline: none;
+}
+
+/* ==============================
+   RESPONSIVE
+================================ */
+@media (max-width: 900px) {
+  .hero {
+    flex-direction: column;
+    text-align: center;
+    gap: 40px;
+  }
+
+  .hero-text h1 {
+    font-size: 2.5rem;
+  }
+
+  .content.shift {
+    margin-left: 0;
+  }
+
+  .transparency-stats {
+    grid-template-columns: 1fr;
+  }
+}
