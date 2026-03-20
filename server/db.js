@@ -36,10 +36,26 @@ CREATE TABLE IF NOT EXISTS farmers (
   crop VARCHAR(100),
   area VARCHAR(200),
   expected_price DECIMAL(10,2),
-  farmer_image VARCHAR(500),
-  product_image VARCHAR(500),
+  farmer_image LONGTEXT,
+  product_image LONGTEXT,
   description TEXT,
   qr_data TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS mediators (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  mediator_id VARCHAR(50),
+  farmer_id VARCHAR(50),
+  name VARCHAR(100),
+  phone VARCHAR(20),
+  location VARCHAR(200),
+  selling_price DECIMAL(10,2),
+  notes TEXT,
+  qr_data TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE farmers MODIFY farmer_image LONGTEXT;
+ALTER TABLE farmers MODIFY product_image LONGTEXT;
 `);

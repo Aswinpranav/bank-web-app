@@ -9,7 +9,8 @@ import { db } from "./db.js";
 const app = express();
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 app.use("/", registerRoutes);
 app.use("/", authRoutes);
@@ -73,6 +74,51 @@ app.get("/farmers", (req, res) => {
   });
 });
 
+app.get("/farmers/id/:farmer_id", (req, res) => {
+  const { farmer_id } = req.params;
+  db.query("SELECT * FROM farmers WHERE farmer_id = ?", [farmer_id], (err, results) => {
+    if (err) return res.status(500).json({ message: "Error fetching farmer details." });
+    if (results.length === 0) return res.status(404).json({ message: "Farmer not found." });
+    res.json(results[0]);
+  });
+});
+
+app.get("/supply-chain/:id", (req, res) => {
+  const id = req.params.id;
+  db.query("SELECT * FROM farmers WHERE farmer_id = ?", [id], (err, farmers) => {
+    if (err) return res.status(500).json({ message: "Error fetching farmer." });
+    if (farmers.length === 0) return res.status(404).json({ message: "No supply chain data found for this QR." });
+
+    db.query("SELECT * FROM mediators WHERE farmer_id = ?", [id], (err, mediators) => {
+      if (err) return res.status(500).json({ message: "Error fetching mediator." });
+      res.json({
+        farmer: farmers[0],
+        mediator: mediators.length > 0 ? mediators[0] : null
+      });
+    });
+  });
+});
+
+app.post("/mediators", (req, res) => {
+  const { mediator_id, farmer_id, name, phone, location, selling_price, notes, qr_data } = req.body;
+
+  db.query(
+    "INSERT INTO mediators (mediator_id, farmer_id, name, phone, location, selling_price, notes, qr_data) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+    [mediator_id, farmer_id, name, phone, location, selling_price, notes || '', qr_data],
+    (err, result) => {
+      if (err) return res.status(500).json({ message: "Error saving mediator.", error: err.message });
+      res.status(201).json({ message: "Mediator registered successfully." });
+    }
+  );
+});
+
+app.get("/mediators", (req, res) => {
+  db.query("SELECT * FROM mediators ORDER BY created_at DESC", (err, results) => {
+    if (err) return res.status(500).json({ message: "Error retrieving mediators." });
+    res.json(results);
+  });
+});
+
 app.delete("/farmers/:id", (req, res) => {
   const farmerId = req.params.id;
   db.query("DELETE FROM farmers WHERE id = ?", [farmerId], (err, result) => {
@@ -82,6 +128,45 @@ app.delete("/farmers/:id", (req, res) => {
   });
 });
 
+app.get("/transactions", (req, res) => {
+  db.query("SELECT id, farmer_id as ref_id, name, crop as item, expected_price as price, area as location, created_at, 'Farmer Registration' as type FROM farmers", (err1, farmers) => {
+    if (err1) return res.status(500).json({ message: "Error fetching farmers for transactions." });
+
+    db.query("SELECT id, farmer_id as ref_id, name, 'N/A' as item, selling_price as price, location, created_at, 'Mediator Update' as type FROM mediators", (err2, mediators) => {
+      if (err2) return res.status(500).json({ message: "Error fetching mediators for transactions." });
+
+      const transactions = [...farmers, ...mediators].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      res.json(transactions);
+    });
+  });
+});
+
+app.get("/reports", (req, res) => {
+  db.query("SELECT COUNT(*) as totalFarmers FROM farmers", (err1, fCount) => {
+    if (err1) return res.status(500).json({ message: "Error fetching farmers count." });
+
+    db.query("SELECT COUNT(*) as totalMediators FROM mediators", (err2, mCount) => {
+      if (err2) return res.status(500).json({ message: "Error fetching mediators count." });
+
+      db.query("SELECT crop, COUNT(*) as count, AVG(expected_price) as avg_price FROM farmers GROUP BY crop", (err3, crops) => {
+        if (err3) return res.status(500).json({ message: "Error fetching crops data." });
+
+        db.query("SELECT AVG(selling_price) as avg_selling_price FROM mediators", (err4, market) => {
+          if (err4) return res.status(500).json({ message: "Error fetching market data." });
+
+          res.json({
+            totalFarmers: fCount[0]?.totalFarmers || 0,
+            totalMediators: mCount[0]?.totalMediators || 0,
+            crops: crops || [],
+            avgMarketPrice: market[0]?.avg_selling_price || 0
+          });
+        });
+      });
+    });
+  });
+});
+
 app.listen(5000, () => {
+
   console.log("✅ Server running on port 5000");
 });
