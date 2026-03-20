@@ -169,7 +169,7 @@ const Dashboard = () => {
       if (!token) return navigate("/login");
 
       try {
-        const res = await fetch("http://localhost:5000/me", {
+        const res = await fetch("https://agrichain-backend-4xal.onrender.com/me", {
           headers: { Authorization: `Bearer ${token}` }
         });
         const data = await res.json();
@@ -196,7 +196,7 @@ const Dashboard = () => {
     e.preventDefault();
     setFarmerSuccess("");
     try {
-      const res = await fetch("http://localhost:5000/farmers/send-otp", {
+      const res = await fetch("https://agrichain-backend-4xal.onrender.com/farmers/send-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phone: farmerData.phone })
@@ -230,7 +230,7 @@ Expected Price: Rs.${farmerData.expectedPrice}/kg`;
     e.preventDefault();
     setFarmerSuccess("");
     try {
-      const res = await fetch("http://localhost:5000/farmers", {
+      const res = await fetch("https://agrichain-backend-4xal.onrender.com/farmers", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -278,7 +278,7 @@ Expected Price: Rs.${farmerData.expectedPrice}/kg`;
     setMediatorSuccess("");
     setFetchedFarmer(null);
     try {
-      const res = await fetch(`http://localhost:5000/farmers/id/${idToFetch}`);
+      const res = await fetch(`https://agrichain-backend-4xal.onrender.com/farmers/id/${idToFetch}`);
       const data = await res.json();
       if (res.ok) {
         setFetchedFarmer(data);
@@ -293,7 +293,7 @@ Expected Price: Rs.${farmerData.expectedPrice}/kg`;
 
   const handleViewSupplyChain = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/supply-chain/${id}`);
+      const res = await fetch(`https://agrichain-backend-4xal.onrender.com/supply-chain/${id}`);
       const data = await res.json();
       if (res.ok) {
         setSupplyChainData(data);
@@ -341,7 +341,7 @@ Expected Price: Rs.${farmerData.expectedPrice}/kg`;
       const useSameId = fetchedFarmer.farmer_id;
       const qrData = `${fetchedFarmer.qr_data}\n\nMEDIATOR UPDATE\n------------------------\nMediator ID: ${useSameId}\nName: ${mediatorData.name}\nSelling Price: Rs.${mediatorData.sellingPrice}/kg\nLocation: ${mediatorData.location}`;
 
-      const res = await fetch("http://localhost:5000/mediators", {
+      const res = await fetch("hhttps://agrichain-backend-4xal.onrender.com/mediators", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -379,10 +379,10 @@ Expected Price: Rs.${farmerData.expectedPrice}/kg`;
   const handleShowFarmersList = async () => {
     try {
       // Fetch both farmers and all mediators to merge
-      const farmerRes = await fetch("http://localhost:5000/farmers");
+      const farmerRes = await fetch("https://agrichain-backend-4xal.onrender.com/farmers");
       const farmerData = await farmerRes.json();
 
-      const mediatorRes = await fetch("http://localhost:5000/mediators");
+      const mediatorRes = await fetch("https://agrichain-backend-4xal.onrender.com/mediators");
       const mediatorData = await mediatorRes.json();
 
       if (Array.isArray(farmerData)) {
@@ -409,7 +409,7 @@ Expected Price: Rs.${farmerData.expectedPrice}/kg`;
 
   const handleDeleteFarmer = async (farmerId) => {
     try {
-      const res = await fetch(`http://localhost:5000/farmers/${farmerId}`, {
+      const res = await fetch(`https://agrichain-backend-4xal.onrender.com/farmers/${farmerId}`, {
         method: "DELETE"
       });
       if (res.ok) {
