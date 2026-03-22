@@ -31,10 +31,25 @@ function Login() {
         body: JSON.stringify({ email, password })
       });
 
-      const data = await res.json();
+      let data;
+      try {
+        const text = await res.text();
+        try {
+          data = JSON.parse(text);
+        } catch (e) {
+          if (res.status === 502 || res.status === 503) {
+            setError("⏳ Server is waking up (takes ~50s). Please wait and try again.");
+            return;
+          }
+          throw new Error("Invalid server response");
+        }
+      } catch (err) {
+        setError("❌ Server error: " + err.message);
+        return;
+      }
 
       if (!res.ok) {
-        setError(data.message || "Login failed");
+        setError(data?.message || "Login failed");
         return;
       }
 
@@ -42,7 +57,11 @@ function Login() {
       navigate("/dashboard", { replace: true });
 
     } catch (err) {
-      setError("❌ Server unreachable");
+      if (err.name === "TypeError") {
+        setError("❌ Server unreachable. (Please hard-refresh the page)");
+      } else {
+        setError("❌ Error: " + err.message);
+      }
     }
   };
 
