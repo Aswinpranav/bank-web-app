@@ -15,7 +15,7 @@ function ResetPassword() {
       return setError("Passwords do not match");
 
     try {
-      const res = await fetch("https://agrichain-backend-4xal.onrender.com", {
+      const res = await fetch("https://agrichain-backend-4xal.onrender.com/reset-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: state?.email, newPassword: password })

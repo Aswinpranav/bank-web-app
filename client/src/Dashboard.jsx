@@ -143,7 +143,7 @@ const Dashboard = () => {
 
   const handleShowReports = async () => {
     try {
-      const res = await fetch("http://localhost:5000/reports");
+      const res = await fetch("https://agrichain-backend-4xal.onrender.com/reports");
       const data = await res.json();
       setReportsData(data);
       setShowReports(true);
@@ -154,7 +154,7 @@ const Dashboard = () => {
 
   const handleShowHistory = async () => {
     try {
-      const res = await fetch("http://localhost:5000/transactions");
+      const res = await fetch("https://agrichain-backend-4xal.onrender.com/transactions");
       const data = await res.json();
       setTransactions(Array.isArray(data) ? data : []);
       setShowHistory(true);
@@ -341,7 +341,7 @@ Expected Price: Rs.${farmerData.expectedPrice}/kg`;
       const useSameId = fetchedFarmer.farmer_id;
       const qrData = `${fetchedFarmer.qr_data}\n\nMEDIATOR UPDATE\n------------------------\nMediator ID: ${useSameId}\nName: ${mediatorData.name}\nSelling Price: Rs.${mediatorData.sellingPrice}/kg\nLocation: ${mediatorData.location}`;
 
-      const res = await fetch("hhttps://agrichain-backend-4xal.onrender.com/mediators", {
+      const res = await fetch("https://agrichain-backend-4xal.onrender.com/mediators", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
